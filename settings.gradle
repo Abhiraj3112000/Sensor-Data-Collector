@@ -1,0 +1,2 @@
+rootProject.name = "Sensor_Data_Collector"
+include ':app'

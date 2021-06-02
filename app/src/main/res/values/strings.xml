@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Sensor_Data_Collector</string>
+    <string name="textview">textview</string>
+    <string name="accelerometer_not_active">Accelerometer Not Active</string>
+    <string name="accelerometer_is_not_active">Accelerometer Is Not Active</string>
+    <string name="magnetometer_is_not_active">Magnetometer Is Not Active</string>
+</resources>
