@@ -27,7 +27,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private TextView textViewAccelerometer;
     private TextView textViewMagnetometer;
     private Button activate;
-    private SensorManager sensorManager;
+    private SensorManager sensorManagerGyroscope;
+    private SensorManager sensorManagerAccelerometer;
+    private SensorManager sensorManagerMagnetometer;
     public String currentDateAndTime = "";
     private static final String GYROSCOPE_FILE = "gyroscope_data.txt";
     private static final String ACCELEROMETER_FILE = "accelerometer_data.txt";
@@ -59,11 +61,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         textViewAccelerometer = findViewById(R.id.textView2);
         textViewMagnetometer =findViewById(R.id.textView3);
         activate = findViewById(R.id.activate);
-        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-
+        //can also be done by using a single system service - done as specified in the meeting 
+        //i.e to use different services
+        sensorManagerGyroscope = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        sensorManagerAccelerometer = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        sensorManagerMagnetometer = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         //gyroscope-
-        if (sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE) != null) {
-            gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+        if (sensorManagerGyroscope.getDefaultSensor(Sensor.TYPE_GYROSCOPE) != null) {
+            gyroscope = sensorManagerGyroscope.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
             isgyroscopeAvailable = true;
         } else {
             textViewGyroscope.setText("Gyroscope is not available");
@@ -71,23 +76,23 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
 
         //accelerometer-
-        if (sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
-            accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        if (sensorManagerAccelerometer.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
+            accelerometer = sensorManagerAccelerometer.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
             isaccelerometerAvailable = true;
         } else {
-           textViewAccelerometer.setText("Accelerometer is not available");
+            textViewAccelerometer.setText("Accelerometer is not available");
             isaccelerometerAvailable = false;
         }
 
         //magnetometer-
-        if (sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD) != null) {
-            magnetometer = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+        if (sensorManagerMagnetometer.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD) != null) {
+            magnetometer = sensorManagerMagnetometer.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
             ismagnetometerAvailable = true;
         } else {
             textViewAccelerometer.setText("Magnetometer is not available");
             ismagnetometerAvailable = false;
         }
-        
+
     }
 
     @Override
@@ -155,9 +160,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 break;
 
             case Sensor.TYPE_ACCELEROMETER:
-                 currentX = sensorEvent.values[0];
-                 currentY = sensorEvent.values[1];
-                 currentZ = sensorEvent.values[2];
+                currentX = sensorEvent.values[0];
+                currentY = sensorEvent.values[1];
+                currentZ = sensorEvent.values[2];
                 if (Acc_isFirstTime) {
                     try {
                         fos = openFileOutput(ACCELEROMETER_FILE, MODE_PRIVATE);
@@ -205,9 +210,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 break;
 
             case Sensor.TYPE_MAGNETIC_FIELD:
-                 currentX = sensorEvent.values[0];
-                 currentY = sensorEvent.values[1];
-                 currentZ = sensorEvent.values[2];
+                currentX = sensorEvent.values[0];
+                currentY = sensorEvent.values[1];
+                currentZ = sensorEvent.values[2];
                 if (magnetometer_isFirstTime) {
                     try {
                         fos = openFileOutput(MAGNETOMETER_FILE, MODE_PRIVATE);
@@ -267,23 +272,23 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
             //accelerometer-
             if (isaccelerometerAvailable) {
-                sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+                sensorManagerAccelerometer.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
                 clickedOn = false;
                 Log.d("activated:","Accelerometer");
-               textViewAccelerometer.setText("Accelerometer is active.");
+                textViewAccelerometer.setText("Accelerometer is active.");
                 activate.setText("Deactivate");
             }
             //gyroscope-
             if (isgyroscopeAvailable) {
-                sensorManager.registerListener(this, gyroscope, SensorManager.SENSOR_DELAY_NORMAL);
+                sensorManagerGyroscope.registerListener(this, gyroscope, SensorManager.SENSOR_DELAY_NORMAL);
                 clickedOn = false;
                 Log.d("activated:","Gyroscope");
-               textViewGyroscope.setText("Gyroscope is active.");
+                textViewGyroscope.setText("Gyroscope is active.");
                 activate.setText("Deactivate");
             }
             //magnetometer-
             if (ismagnetometerAvailable) {
-                sensorManager.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_NORMAL);
+                sensorManagerMagnetometer.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_NORMAL);
                 clickedOn = false;
                 Log.d("activated:","Magnetometer");
                 textViewMagnetometer.setText("Magnetometer is active.");
@@ -294,21 +299,21 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         {
 
             if (isaccelerometerAvailable) {
-                sensorManager.unregisterListener(this);
+                sensorManagerAccelerometer.unregisterListener(this);
                 textViewAccelerometer.setText("Accelerometer Is Deactivated");
                 clickedOn = true;
                 activate.setText("  Activate  ");
             }
             if(isgyroscopeAvailable)
             {
-                sensorManager.unregisterListener(this);
+                sensorManagerGyroscope.unregisterListener(this);
                 textViewGyroscope.setText("Gyroscope Is Deactivated");
                 clickedOn=true;
                 activate.setText("  Activate  ");
             }
             if(ismagnetometerAvailable)
             {
-                sensorManager.unregisterListener(this);
+                sensorManagerMagnetometer.unregisterListener(this);
                 textViewMagnetometer.setText("Magnetometer Is Deactivated");
                 clickedOn=true;
                 activate.setText("  Activate  ");
@@ -320,13 +325,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     protected void onPause() {
         super.onPause();
         if (isaccelerometerAvailable) {
-            sensorManager.unregisterListener(this);
+            sensorManagerAccelerometer.unregisterListener(this);
         }
         if (isgyroscopeAvailable) {
-            sensorManager.unregisterListener(this);
+            sensorManagerGyroscope.unregisterListener(this);
         }
         if (ismagnetometerAvailable) {
-            sensorManager.unregisterListener(this);
+            sensorManagerMagnetometer.unregisterListener(this);
         }
     }
 }
