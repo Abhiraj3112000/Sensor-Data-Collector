@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         textViewMagnetometer =findViewById(R.id.textView3);
         activate = findViewById(R.id.activate);
         //can also be done by using a single system service - done as specified in the meeting 
-        //i.e to use different services
+        //i.e to use separate system services
         sensorManagerGyroscope = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         sensorManagerAccelerometer = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         sensorManagerMagnetometer = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
